@@ -1,0 +1,53 @@
+{% extends "instagram/layout.html" %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="row pt-5 pb-5 ">
+            <div class="col-sm-9 d-flex p-2 bd-highlight">
+                <div class="col-sm-3" style="text-align: center;">
+                    <img src="{{ page_user.avatar_url }}" class="rounded-circle" style="width: 160px;" />
+                </div>
+                <div class="col-sm-6">
+                    {{ page_user.username }}
+
+                    {% if request.user != page_user %}
+                        {% if is_follow %}
+                            <a class='btn btn-primary ml-2 mr-3' href="{% url 'accounts:user_unfollow' page_user.username %}">Unfollow</a>
+                        {% else %}
+                            <a class='btn btn-primary ml-2 mr-3' href="{% url 'accounts:user_follow' page_user.username %}">Follow</a>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if request.user == page_user %}
+                        <a href="{% url 'accounts:profile_edit' %}" class="btn btn-secondary btn-sm ml-2 mr-3">
+                            Edit Profile
+                        </a>
+                    {% endif %}
+                    <hr/>
+                    <span class="mr-3">Post {{ post_list_count }}</span>
+                    <a href="{% url 'instagram:follower_list' page_user.username %}" style="color: inherit;">
+                        <span class="mr-3">Follower {{ follower_count }}</span>
+                    </a>
+                    <a href="{% url 'instagram:following_list' page_user.username %}" style="color: inherit;">
+                        <span>Following {{ following_count }}</span>
+                    </a>
+                    <hr/>
+                    {{ page_user.name }}</br>
+                    {{ page_user.bio }}</br>
+                    <a href="{{ page_user.website_url }}" target="_blank">{{ page_user.website_url }}</a></br>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            {% for post in post_list %}
+                <div class="col-sm-4 mb-4">
+                    <a href="{% url 'instagram:post_detail' post.pk %}">
+                        <img class='rounded' src="{{ post.image_thumbnail.url }}" alt="{{ post.caption }}" style="width: 100%;" />
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

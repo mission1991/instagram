@@ -1,0 +1,10 @@
+{% load humanize %}
+
+<div class="comment">
+    <strong class="mr-2">{{ comment.author }}</strong>
+    {{ comment.message }}
+    <small class="text-muted">{{ comment.created_at|naturaltime }}</small>
+    {% if request.user == comment.author %}
+        <a class="ml-3" href="{% url 'instagram:comment_delete' comment.pk %}">삭제</a>
+    {% endif %}
+</div>

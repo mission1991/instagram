@@ -1,0 +1,9 @@
+django~=3.1.5
+django-bootstrap4
+pillow
+django-pydenticon
+easy-thumbnails
+markdown
+django-storages
+boto3
+pymysql

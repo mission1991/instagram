@@ -1,0 +1,6 @@
+__pycache__
+.idea
+env.sh
+.env
+venv
+secret_key.py

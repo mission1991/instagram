@@ -1,0 +1,110 @@
+{% load bootstrap4 humanize instagram_tags %}
+{% load static %}
+
+<div class="card">
+    <div class="card-header">
+        <div class="row justify-content-between">
+            <div class="d-flex justify-content-start">
+               <a href="{% url 'instagram:user_page' post.author.username %}">
+                    <img class='rounded-circle ml-3 mr-2' src="{{ post.author.avatar_url }}" style="width: 34px; height: 34px;" />
+                    {{ post.author.username }}
+                </a>
+            </div>
+            {% if request.user == post.author %}
+                <div class="d-flex justify-content-end">
+                    <a class='btn btn-info btn-sm mr-2' href="{% url 'instagram:post_update' post.pk %}">수정</a>
+                    <a href="#" class="delete btn btn-sm btn-danger mr-2"
+                       data-uri="{% url 'instagram:post_delete' post.pk  %}">삭제</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card-body">
+        <a href="{{ post.get_absolute_url }}">
+            <img class='rounded mb-2' src="{{ post.photo.url }}" style="width: 100%;" />
+        </a>
+        <div class="p-1">
+
+            <!--  좋아요기능  -->
+            {% if post|is_like_user:user %}
+                <a href="{% url 'instagram:post_unlike' post.pk %}" style="color: inherit;">
+                    <img src="{% static 'images/heart2.png' %}" style="width: 30px; height: 30px;" />
+                </a>
+            {% else %}
+                <a href="{% url 'instagram:post_like' post.pk %}" style="color: inherit;">
+                    <img src="{% static 'images/heart.png' %}" style="width: 30px; height: 30px;" />
+                </a>
+
+
+            {% endif %}
+            <a href="{{ post.get_absolute_url }}" style="color: inherit;" class="ml-1">
+                <img src="{% static 'images/comments.png' %}" style="width: 30px; height: 30px;" />
+            </a>
+            <span class="text-muted pl-1" ><small>{{ post.location }}</small></span>
+        </div>
+        <div class="p-2">
+            {{post.caption|linebreaks}}
+        </div>
+        <!-- 댓글 -->
+        <div id="post-{{ post.pk }}-comment-list" class="comment-list mt-3 mb-3">
+            {% for comment in post.comment_set.all %}
+                {% include "instagram/_comment.html" %}
+            {% endfor %}
+        </div>
+        <!-- 해시태그 -->
+        <div>
+            {% for tag in post.tag_set.all %}
+                <span class="badge badge-primary">
+                    #{{ tag.name }}
+                </span>
+            {% endfor %}
+        </div>
+        <!-- 작성일 -->
+        <div>
+            <a href="{{ post.get_absolute_url }}" style="" class="text-muted">
+                <small>
+                    {{ post.created_at|naturaltime }}
+                </small>
+            </a>
+        </div>
+    </div>
+
+    <!--  댓글쓰기  -->
+    <div class="card-footer">
+        <form id="post-{{ post.pk }}-comment-form" action="{% url 'instagram:comment_new' post.pk %}" method="POST">
+            {% csrf_token %}
+            {% bootstrap_form comment_form %}
+            <input type="submit" value="댓글 쓰기" class="btn btn-primary btn-block" />
+        </form>
+
+        <script>
+        $(function(){
+            $(".delete").on('click', function() {
+                if(confirm("정말로 삭제하시겠습니까?")) {
+                    location.href = $(this).data('uri');
+                }
+            });
+        });
+        $(function() {
+            var form_id = "post-{{ post.pk }}-comment-form";
+            $("#" + form_id).submit(function(e) {
+                e.preventDefault();
+
+                var options = {
+                    success: function(responseText, statusText, xhr, $form) {
+                        console.group("ajaxSubmit response");
+                        console.log(responseText);
+                        console.log(statusText);
+                        console.log(xhr);
+                        console.log($form);
+                        console.groupEnd();
+                        $("#post-{{ post.pk }}-comment-list").prepend(responseText);
+                    }
+                };
+                $(this).ajaxSubmit(options);
+            });
+        });
+        </script>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+{% extends "instagram/layout.html" %}
+
+{% block content %}
+    <div class="container">
+
+        <div class="row">
+            <div class="col-sm-8">
+                {% for post in post_list %}
+                    <div class="mb-3">
+                        {% include "instagram/_post_card.html" %}
+                    </div>
+                {% empty %}
+                    포스팅이 없습니다.
+                {% endfor %}
+            </div>
+            <div class="col-sm-4">
+                {% include "instagram/timeline_sidebar.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "instagram/layout.html" %}
+{% load thumbnail %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="row pt-5 pb-5 ">
+            <div class="col-sm-9 d-flex p-2 bd-highlight">
+                <div class="row mt-3">
+                    {{ post_list }}
+                    {% if post_list %}
+                        {% for post in post_list %}
+                            <div class="col-sm-4 mb-3">
+                                <img class='rounded' src="{% thumbnail post.photo 512x512 crop %}" alt="{{ post.caption }}" style="width: 100%;%" />
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        태그된 게시물이 없습니다.
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

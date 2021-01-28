@@ -1,0 +1,33 @@
+{% extends "instagram/layout.html" %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 offset-sm-3">
+                <div class="card mb-3">
+                    <div class="card-header text-muted">
+                        Following User List
+                     </div>
+                    <div class="card-body text-muted">
+                        {% for follower in follower_all %}
+                            <div class="d-flex mb-1">
+                                <div class="mr-3">
+                                    <img src="{{ follower.avatar_url }}" style="width: 36px; height: 36px;" class="rounded-circle" />
+                                </div>
+                                <div class="">
+                                    <a href="{% url 'instagram:user_page' follower.username %}">
+                                    {{ follower.username }}
+                                    </a>
+                                </div>
+                                <div class="ml-auto">
+                                    <a href="{% url 'accounts:user_unfollow' follower.username %}">Unfollow</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
